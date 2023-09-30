@@ -62,7 +62,7 @@ namespace Deathroll
                 int betPC; //sázka počítače
                 int betU; //sázka hráče
                 int betfinal = 1000; //finalni částka na které se hráči dohodli
-                int player = 1; //který hráč je na tahu 
+                int noofrolls = 1; //kolikrát se házelo, abychom si mohli utahvoat z hráče když hodil 1 na první pokus
                 int round = 0; //které je kolo
                 int PSC = 0; // PSC = Procdeural Step Counter, použitý na počítání kroků, abychom využívali na hile apod.
                 Random rnd = new Random(); //random promněnná
@@ -72,15 +72,8 @@ namespace Deathroll
 
                 //úvod k sázecí části (přehraje se pouze po začatí programu)
 
-                betPC = rnd.Next(10, 700); //generace prvního návrhu na sázku, mezi 10 a 700
-                if (betPC > goldsPC) //pokud je sázka větší než hodnota naší peněženky tak sázíme znovu dokud není menší nebo rovna než počet goldů
-                {
-                    while (betPC > goldsPC)
-                    {
-                        betPC = rnd.Next(0, 400); //tentokrát zahrnujeme i nulu, abychom později zabránili tomu že se nedostaneme pod 10 a můžeme kompletně zbankrotovat
-                    }
-                }
-                Console.WriteLine("ŠMAJDALF : Vítej, poutníče! Zahraj si se mnou smrtelný rachot! Oba na začátku začínáme s měšcem s 1000 zlaťáky. Já na první kolo sázím " + betPC + ". Líbí se ti tahle částka?(Y/N)\n"); //Vybídka k dohodnutí se na sázce
+                betPC = rnd.Next(2, goldsPC); //generace prvního návrhu na sázku, mezi 2 a all in
+                Console.WriteLine("ŠMAJDALF : Vítej, poutníče! Zahraj si se mnou smrtirachot! Oba na začátku začínáme s měšcem s 1000 zlaťáky. Já na první kolo sázím " + betPC + ". Líbí se ti tahle částka?(Y/N)\n"); //Vybídka k dohodnutí se na sázce
 
                 //sázecí část
 
@@ -89,9 +82,9 @@ namespace Deathroll
                     input = Convert.ToString(Console.ReadLine()); //přečtení inputu
                     if (input == "Y") //v případě že odpoví ano, jde se do druhého kola.
                     {
-                        round++;
                         betfinal = betPC;
-                        Console.WriteLine("\nŠMAJDALF : Tedy dobrá! Jdeme hrát! Začni házet. Maximální možná hodnota hodu je " + betfinal + " (Napiš: hod) \n");
+                        Console.WriteLine("\nŠMAJDALF : Tedy dobrá! Jdeme hrát! Začni házet. Maximální možná hodnota hodu je " + betfinal + " (Napiš: hod)\n");
+                        round = 1;
                     }
                     else if (input == "N") //v případě že odpoví ne, šmajdalf vybízí aby si hráč vybral vlastní částku. to se dále dělí na "je to číslo?" "je to dostatečně velká částka?" "je to super číslo, jde se do dalšího kola"
                     {
@@ -102,16 +95,24 @@ namespace Deathroll
                             JeToInput = int.TryParse(input, out betU); //nový bool podle kterého určíme zda se jedná o číslo nebo nějakou blbost, pokud to není blbost, nastavíme jako betU (funkce out) (inspirováno z W3 schools ale VÝRAZNĚ upraveno)(je to už v podstatě úplně jiný kód)
                             if (JeToInput)
                             {
-                                Console.WriteLine("Poznámka pro programátora: " + input + " konvertováno na: " + betU); //tenhle writeline se může na poslední iteraci programu smazat, funguje jako debug když kód jede
-                                if (betU < 10)
+                                Console.WriteLine("Poznámka pro programátora: " + input + " konvertováno na: " + betU + "\n"); //tenhle writeline se může na poslední iteraci programu smazat, funguje jako debug když kód jede
+                                if (betU <= goldsU) //pro případ že sází víc než má, říkáme ať vybere menší číslo
                                 {
-                                    Console.WriteLine("\nHora porodila myš! Tož ty si nějako nevěříš ne? Zkus trochu větší číslo...\n");
+                                    if (betU < 10)
+                                    {
+                                        Console.WriteLine("\nŠMAJDALF : Hora porodila myš! Tož ty si nějako                 nevěříš ne? Zkus trochu větší částku...\n");
+                                    }
+                                    else
+                                    {
+                                        betfinal = betU;
+                                        PSC = 1;
+                                        round = 1;
+                                        Console.WriteLine("\nŠMAJDALF : Krásná částka. Mě se líbí! Dobrá, jedeme dál s maximálním hodem " + betfinal + " (Napiš: hod)\n");
+                                    }
                                 }
                                 else
                                 {
-                                    betfinal = betU;
-                                    PSC = 1;
-                                    round++;
+                                    Console.WriteLine("\nŠMAJDALF : Vždyť tolik ani nemáš ve šrajtofli! Vyber si        menší číslo!\n");
                                 }
                             }
                             else
@@ -130,8 +131,26 @@ namespace Deathroll
 
                 while (round == 1) //pokud je první kolo
                 {
-                    roll = rnd.Next(1, betfinal);
-
+                    while (PSC == 1) //opakujeme dokud šikulka za klávesnicí nenapíše hod :)
+                    {
+                        Console.WriteLine("Dostali je¨sme se za while psc 1");
+                        input = Console.ReadLine(); //nastaví INPUT na to co napíše user
+                        if (input == "hod") //pokud je input hod, pokračujeme na rollování
+                        {
+                            roll = rnd.Next(1, betfinal); //náhodné číslo od 1 do hodnoty sázky
+                            if (roll == 1)//pokud je roll 1, zalamentujeme nad tím jakou má hráč smůlu a posíláme ho na transakci z účtu na účet
+                            {
+                                if (noofrolls == 1)
+                                {
+                                    Console.WriteLine("\nŠMAJDALF : JEJE! Tady má dneska někdo šťastnej den. No nic, nedá se nic dělat. Tvé goldy? Moje nyní.╰(*°▽°*)╯\n");
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("\nŠMAJDALF : Řekl jsem \x4bhod\x4b! Co to tu žblebtáš!? Zkus to znovu.\n");
+                        }
+                    }
                 }
 
             }
