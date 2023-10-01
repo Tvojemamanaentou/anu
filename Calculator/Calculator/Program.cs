@@ -15,38 +15,38 @@ namespace Calculator
     {
         static void Main(string[] args)
         {
-            /*
-             * Pokud se budes chtit na neco zeptat a zrovna budu pomahat jinde, zkus se zeptat ChatGPT ;) - https://chat.openai.com/
+            /* STRUKTURA:
              * 
-             * ZADANI
-             * Vytvor program ktery bude fungovat jako kalkulacka. Kroky programu budou nasledujici:
-             * DONE 1) Nacte vstup pro prvni cislo od uzivatele (vyuzijte metodu Console.ReadLine() - https://learn.microsoft.com/en-us/dotnet/api/system.console.readline?view=netframework-4.8.
-             * DONE 2) Zkonvertuje vstup od uzivatele ze stringu do integeru - https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/how-to-convert-a-string-to-a-number.
-             * DONE 3) Nacte vstup pro druhe cislo od uzivatele a zkonvertuje ho do integeru. (zopakovani kroku 1 a 2 pro druhe cislo)
-             * DONE 4) Nacte vstup pro ciselnou operaci. Rozmysli si, jak operace nazves. Muze to byt "soucet", "rozdil" atd. nebo napr "+", "-", nebo jakkoliv jinak.
-             * DONE 5) Nadefinuj integerovou promennou result a prirad ji prozatimne hodnotu 0.
-             * 6) Vytvor podminky (if statement), podle kterych urcis, co se bude s cisly dit podle zadane operace
-             *    a proved danou operaci - https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/selection-statements.
-             * 7) Vypis promennou result do konzole
+             * Definice potřebných promněých
+             * představení programu
              * 
-             * Mozna rozsireni programu pro rychliky / na doma (na poradi nezalezi):
-             * 1) Vypis do konzole pred nactenim kazdeho uzivatelova vstupu co po nem chces
-             * 2) a) Kontroluj, ze uzivatel do vstupu zadal, co mel (cisla, popr. ciselnou operaci). Pokud zadal neco jineho, napis mu, co ma priste zadat a program ukoncete.
-             * 2) b) To same, co a) ale misto ukonceni programu opakovane cti vstup, dokud uzivatel nezada to, co ma
-             *       - https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/iteration-statements#the-while-statement
-             * 3) Umozni uzivateli zadavat i desetinna cisla, tedy prekopej kalkulacku tak, aby umela pracovat s floaty
+             * input prvního čísla
+             *      jestli je help, print help a opakujeme žádost
+             *      
+             *      
+             * input druhého čísla
+             *      jestli je help, print help a opakujeme žádost
+             *      jestli je odmocni/nadruhou, efektujeme 1. číslo a opakujeme žádost o input 2. čísla
+             *      
+             * input operace
+             *      příkazy, včetně pojistky dělění nulou
+             *          jestli je help, print help a opakujeme žádost
+             *          jestli je odmocni/nadruhou, efektujeme 2. číslo a opakujeme žádost o input příkazu
+             * 
+             * ReadKey
+             * KONEC PROGRAMU
              */
-
-            //Tento komentar smaz a misto nej zacni psat svuj prdacky kod.
             bool JeToInput;
             string input;
             float no1 = 0;
             float no2 = 0;
             int ChosenFirst = 0;
             float result = 0;
+            int krok = 0;
+            string basechange = "";
 
             Console.WriteLine("ISIINA PRĎÁCKÁ KALKUALČKA\nZadej první číslo.\n");
-            while (ChosenFirst < 3) 
+            while (ChosenFirst < 4) 
             {
 
 
@@ -57,25 +57,23 @@ namespace Calculator
                     JeToInput = float.TryParse(input, out no1); //nový bool podle kterého určíme zda se jedná o číslo nebo nějakou blbost, pokud to není blbost, nastavíme jako betU (funkce out) (zkopírováno z mého deathrollu)
                     if (JeToInput)
                     {
-                        Console.WriteLine("\n" + input + " bylo konvertováno na: " + no1 + " zadejte druhé číslo, nebo operativní příkaz\n");
+                        Console.WriteLine("\n" + input + " bylo konvertováno na: " + no1 + "\nZadejte druhé číslo, nebo operativní příkaz\n");
                         ChosenFirst++;
                     }
-
-
-
-
                     else
                     {
                         if (input == "help")
                         {
-                            Console.WriteLine("\nSEZNAM PŘÍKAZŮ PRO ISIINU PRĎÁCKOU KALKULAČKU!\n\nPŘÍMÉ PŘÍKAZY-\n  help: hádej vole;\n\nOPERATIVNÍ PŘÍKAZY-\n  nadruhou: zadáno-li po výběru čísla, znásobí číslo samo se sebou; "); //vybídka ke znovunastavení sázky uživatele
+                            Console.WriteLine("\nSEZNAM PŘÍKAZŮ PRO ISIINU PRĎÁCKOU KALKULAČKU!\n\n\nPŘÍMÉ PŘÍKAZY-\n  help: hádej vole;\n  odečti: odečte dvě zadaná čísla;\n  sečti: sečte dvě zadaná čísla;\n  znásob: znásobí dvě zadaná čísla;\n  vyděl: vydělí dvě zadaná čísla;\n\nOPERATIVNÍ PŘÍKAZY-\n  nadruhou: zadáno-li po výběru čísla, znásobí číslo samo se sebou;\n  odmocni: zadáno-li po výběru čísla, nastaví číslo jako odmocninu sama sebe;\n\n A teď zadej první číslo");
                         }
                         else
                         {
-                            Console.WriteLine("\nChuligáne! Tomu říkáš číslo!? Nemel blbosti a napiš něco pořádného!" + input + " konvertováno nebylo. \n"); //vybídka ke znovunastavení sázky uživatele
+                            Console.WriteLine("\nChuligáne! Tomu říkáš číslo!? Nemel blbosti a napiš něco pořádného! " + input + " konvertováno nebylo. \n"); //vybídka ke znovunastavení sázky uživatele
                         }
                     }
                 }
+
+
 
 
 
@@ -85,23 +83,24 @@ namespace Calculator
                     JeToInput = float.TryParse(input, out no2); //nový bool podle kterého určíme zda se jedná o číslo nebo nějakou blbost, pokud to není blbost, nastavíme jako betU (funkce out) (zkopírován oz mého deathrollu)
                     if (JeToInput)
                     {
-                        Console.WriteLine("\n" + input + " bylo konvertováno na: " + no2 + ", zadejte činnost (e.g. sečti, znásob, etc.), nebo operativní příkaz\n");
+                        Console.WriteLine("\n" + input + " bylo konvertováno na: " + no2 + "\nZadejte činnost (e.g. sečti, znásob, etc.), nebo operativní příkaz\n");
                         ChosenFirst++;
                     }
-
-
-
-
                     else
                     {
                         if (input == "help")
                         {
-                            Console.WriteLine("\nSEZNAM PŘÍKAZŮ PRO ISIINU PRĎÁCKOU KALKULAČKU!\n\nPŘÍMÉ PŘÍKAZY-\n  help: hádej vole;\n\nOPERATIVNÍ PŘÍKAZY-\n  nadruhou: zadáno-li po výběru čísla, znásobí číslo samo se sebou; "); //vybídka ke znovunastavení sázky uživatele
+                            Console.WriteLine("\nSEZNAM PŘÍKAZŮ PRO ISIINU PRĎÁCKOU KALKULAČKU!\n\n\nPŘÍMÉ PŘÍKAZY-\n  help: hádej vole;\n  odečti: odečte dvě zadaná čísla;\n  sečti: sečte dvě zadaná čísla;\n  znásob: znásobí dvě zadaná čísla;\n  vyděl: vydělí dvě zadaná čísla;\n\nOPERATIVNÍ PŘÍKAZY-\n  nadruhou: zadáno-li po výběru čísla, znásobí číslo samo se sebou;\n  odmocni: zadáno-li po výběru čísla, nastaví číslo jako odmocninu sama sebe; \n\n A teď zadej druhé číslo, nebo operativní příkaz");
                         }
                         else if (input == "nadruhou")
                         {
                             no1 = no1 * no1;
-                            Console.WriteLine("\nPrvní číslo bylo dáno nadruhou. Číslo nyní činí: " + no1 + " Zadejte činnost (e.g. sečti, znásob, etc.), nebo operativní příkaz.\n");
+                            Console.WriteLine("\nPrvní číslo bylo dáno nadruhou. Číslo nyní činí: " + no1 + "\nZadejte druhé číslo, nebo operativní příkaz.\n");
+                        }
+                        else if (input == "odmocni")
+                        {
+                            no1 = (float)Math.Sqrt(no1);
+                            Console.WriteLine("\nPrvní číslo bylo odmocněno. Číslo nyní činí: " + no1 + "\nZadejte činnost druhé číslo, nebo operativní příkaz.\n");
                         }
                         else
                         {
@@ -136,28 +135,87 @@ namespace Calculator
                     }
                     else if (input == "vyděl")
                     {
-                        result = no1 / no2;
-                        Console.WriteLine("\n Výsledek činní: " + result);
-                        ChosenFirst++;
+                        if (no2 == 0) 
+                        { 
+                            Console.WriteLine("\nNulou dělit nelze. Vyber nové druhé číslo.\n");
+                        }
+                        else
+                        {
+                            result = no1 / no2;
+                            Console.WriteLine("\n Výsledek činní: " + result);
+                            ChosenFirst++;
+                        }
                     }
                     else if (input == "poděl")
                     {
-                        result = no1 / no2;
-                        Console.WriteLine("\n Sám seš poděl! Ale pokud jsi chtěl VYDĚLIT tak výsledek: " + result);
-                        ChosenFirst++;
+                        if (no2 == 0)
+                        {
+                            Console.WriteLine("\nNulou dělit nelze. Vyber nové druhé číslo.\n");
+                        }
+                        else
+                        {
+                            result = no1 / no2;
+                            Console.WriteLine("\nSám seš poděl! ( ´･･)ﾉ(._.`) Ale pokud jsi chtěl VYDĚLIT tak výsledek je: " + result);
+                            ChosenFirst++;
+                        }
                     }
                     else if (input == "help")
                     {
-                        Console.WriteLine("\nSEZNAM PŘÍKAZŮ PRO ISIINU PRĎÁCKOU KALKULAČKU!\n\nPŘÍMÉ PŘÍKAZY-\n  help: hádej vole;\n\nOPERATIVNÍ PŘÍKAZY-\n  nadruhou: zadáno-li po výběru čísla, znásobí číslo samo se sebou; "); //vybídka ke znovunastavení sázky uživatele
+                        Console.WriteLine("\nSEZNAM PŘÍKAZŮ PRO ISIINU PRĎÁCKOU KALKULAČKU!\n\n\nPŘÍMÉ PŘÍKAZY-\n  help: hádej vole;\n  odečti: odečte dvě zadaná čísla;\n  sečti: sečte dvě zadaná čísla;\n  znásob: znásobí dvě zadaná čísla;\n  vyděl: vydělí dvě zadaná čísla;\n\nOPERATIVNÍ PŘÍKAZY-\n  nadruhou: zadáno-li po výběru čísla, znásobí číslo samo se sebou;\n  odmocni: zadáno-li po výběru čísla, nastaví číslo jako odmocninu sama sebe; \n\n A teď zadej přímý nebo operativní příkaz");
                     }
                     else if (input == "nadruhou")
                     {
                         no2 = no2 * no2;
-                        Console.WriteLine("\nDruhé číslo bylo dáno nadruhou. Nyní činní: " + no2 + " Zadejte činnost (e.g. sečti, znásob, etc.), nebo operativní příkaz.\n");
+                        Console.WriteLine("\nDruhé číslo bylo dáno nadruhou. Nyní činní: " + no2 + "\nZadejte činnost (e.g. sečti, znásob, etc.), nebo operativní příkaz.\n");
+                    }
+                    else if (input == "odmocni")
+                    {
+                        no2 = (float)Math.Sqrt(no2);
+                        Console.WriteLine("\nDruhé číslo bylo odmocněno. Číslo nyní činí: " + no2 + "\nZadejte činnost (e.g. sečti, znásob, etc.), nebo operativní příkaz.\n");
                     }
                     else
                     {
                         Console.WriteLine("\nChuligáne! Tomu říkáš číslo!? Nemel blbosti a napiš něco pořádného!" + input + " konvertováno nebylo. \n"); //vybídka ke znovunastavení sázky uživatele
+                    }
+                }
+
+
+
+
+                if (ChosenFirst == 3)
+                {
+                    Console.WriteLine("\nPřevést do nějaké soustavy?\nAno/Ne? V případě ne ukončuji kód");
+                    input = Console.ReadLine();
+                    if (input == "Ano")
+                    {
+                        Console.WriteLine("Do které? K dispozici:\n  Šestnáctková\n  Dvojková\n");
+                        input = Console.ReadLine();
+                        if (input == "Dvojková")
+                        {
+                            while (krok == 0)
+                            {
+                                no1 = result / 2;
+                                no2 = result % 2;
+                                basechange += no2;
+                                result = result / 2;   
+                                if (no1 < 1)
+                                {
+                                    krok++;
+                                }
+                                Console.WriteLine("Výsledek v dvojkové sousatvě je: " + basechange);
+                            };
+                        }
+                    }
+                    else if (input != "Ne")
+                    {
+                        if (input != "ne")
+                        {
+                            Console.WriteLine("Buď napiš Ano nebo Ne, žádné pitominy");
+                        }
+                    }
+                    else
+                    {
+                        ChosenFirst++;
                     }
                 }
 
