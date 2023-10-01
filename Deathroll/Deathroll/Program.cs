@@ -133,7 +133,7 @@ namespace Deathroll
                 {
                     while (PSC == 1) //opakujeme dokud šikulka za klávesnicí nenapíše hod :)
                     {
-                        Console.WriteLine("Dostali je¨sme se za while psc 1");
+                        Console.WriteLine("Dostali jsme se za while psc 1");
                         input = Console.ReadLine(); //nastaví INPUT na to co napíše user
                         if (input == "hod") //pokud je input hod, pokračujeme na rollování
                         {
