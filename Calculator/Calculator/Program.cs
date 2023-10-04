@@ -46,7 +46,7 @@ namespace Calculator
             string basechange = "";
 
             Console.WriteLine("ISIINA PRĎÁCKÁ KALKUALČKA\nZadej první číslo.\n");
-            while (ChosenFirst < 4) 
+            while (ChosenFirst < 4)
             {
 
 
@@ -135,8 +135,8 @@ namespace Calculator
                     }
                     else if (input == "vyděl")
                     {
-                        if (no2 == 0) 
-                        { 
+                        if (no2 == 0)
+                        {
                             Console.WriteLine("\nNulou dělit nelze. Vyber nové druhé číslo.\n");
                         }
                         else
@@ -197,7 +197,7 @@ namespace Calculator
                                 no1 = result / 2;
                                 no2 = result % 2;
                                 basechange += no2;
-                                result = result / 2;   
+                                result = result / 2;
                                 if (no1 < 1)
                                 {
                                     krok++;
