@@ -15,7 +15,7 @@ namespace Calculator
     {
         static void HelpPrikaz()
         {
-            Console.WriteLine("\nSEZNAM PŘÍKAZŮ PRO ISIINU PRĎÁCKOU KALKULAČKU!\n\n\nPŘÍMÉ PŘÍKAZY-\n  help: hádej vole;\n  odečti: odečte dvě zadaná čísla;\n  sečti: sečte dvě zadaná čísla;\n  znásob: znásobí dvě zadaná čísla;\n  vyděl: vydělí dvě zadaná čísla;\n  procenta: ukáže kolik procent tvoří první číslo z druhého;\n  loga(b): vytvoří logaritmus z čísla jedna o základu čísla dva.\n\nOPERATIVNÍ PŘÍKAZY-\n  nadruhou: zadáno-li po výběru čísla, znásobí číslo samo se sebou;\n  odmocni: zadáno-li po výběru čísla, nastaví číslo jako odmocninu sama sebe;\n  ln:vytvoří přirozený logaritmus z posledního zadaného čísla;\n  log10:vytvoří logaritmus o zákaldu deset z posledního zadaného čísla;  \n\n A teď zadej druhé číslo, nebo operativní příkaz");
+            Console.WriteLine("\nSEZNAM PŘÍKAZŮ PRO ISIINU PRĎÁCKOU KALKULAČKU!\n\n\nPŘÍMÉ PŘÍKAZY-\n  help: hádej vole;\n  odečti: odečte dvě zadaná čísla;\n  sečti: sečte dvě zadaná čísla;\n  znásob: znásobí dvě zadaná čísla;\n  vyděl: vydělí dvě zadaná čísla;\n  procenta: ukáže kolik procent tvoří první číslo z druhého;\n  loga(b): vytvoří logaritmus z čísla jedna o základu čísla dva.\n\nOPERATIVNÍ PŘÍKAZY-\n  nadruhou: zadáno-li po výběru čísla, znásobí číslo samo se sebou;\n  odmocni: zadáno-li po výběru čísla, nastaví číslo jako odmocninu sama sebe;\n  ln:vytvoří přirozený logaritmus z posledního zadaného čísla;\n  log10:vytvoří logaritmus o zákaldu deset z posledního zadaného čísla;  \n\n A teď zadej, první nebo druhé číslo, nebo operativní příkaz, či činnost, dependeing on co jsi zadal jako poslední.");
         }
         static void Main(string[] args)
         {
