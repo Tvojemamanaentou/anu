@@ -59,7 +59,7 @@ namespace SearchPlayground
                 {
                     return m;
                 }
-                else if (m < elementToSearch) 
+                if (array[m] < elementToSearch) 
                 {
                     l = m + 1;
                 }
@@ -67,13 +67,31 @@ namespace SearchPlayground
                 {
                     u = m - 1;
                 }
-            };
+            }
             return -1;
         }
 
         static int BinarySearchRecursive(int[] array, int elementToSearch, int lower, int upper)
         {
             //TODO naimplementuj binární vyhledávání rekurzivním způsobem (Zamysli se nad parametry, které tato funkce přijímá vzpomeň si na přístup Rozděl a Panuj.)
+            counter++;
+            if (lower > upper)
+            {
+                return -1;
+            }
+            int mid = (lower  + upper) / 2;
+            if (array[mid] == elementToSearch)
+            {
+                return mid;
+            }
+            if (array[mid] < elementToSearch)
+            {
+                return BinarySearchRecursive(array, elementToSearch, mid+1, upper);
+            }
+            if (array[mid] > elementToSearch)
+            {
+                return BinarySearchRecursive(array, elementToSearch, lower, mid-1);
+            }
             return -1;
         }
 
