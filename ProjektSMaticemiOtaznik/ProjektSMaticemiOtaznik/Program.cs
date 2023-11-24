@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -33,13 +34,18 @@ namespace SearchPlayground
         //S čím přijdete vy :)
         //- tolik bodů, na kolik se domluvíme
         //
-        //5 bodů -input array
-        //5 bodů -prohazování
+        //5     bodů    -input array
+        //7.5   bodů    -prohazování
+        //5     bodů    -diagonály
+        //7   bodů    -coding style?
+        //12.5  bodů    -vynásobit : matici(5) sloupec(2.5) řádek(2.5) prvek(2.5)
+        //37 = 3
 
         static int a = 0;
         static int b = 0;
         static int input = 0;
         static int[,] mainArray;
+        static int memory;
 
         static void AskForNumbers()
         {
@@ -149,6 +155,22 @@ namespace SearchPlayground
         }
 
 
+        static void PositionSwap(int[,] array)
+                {
+                    Console.WriteLine("Hodnota a je pro Xovou souřadnici prvního čísla, hodnota b je pro Yovou souřadnici prvního čísla.");
+                    AskForNumbersPlus(mainArray);
+                    int xFirst = a;
+                    int yFirst = b;
+                    Console.WriteLine("Hodnota a je pro Xovou souřadnici druhého čísla, hodnota b je pro Yovou souřadnici druhého čísla.");
+                    AskForNumbersPlus(mainArray);
+                    int xSecond = a;
+                    int ySecond = b;
+                    memory = array[xFirst, yFirst];
+                    array[xFirst, yFirst] = array[xSecond, ySecond];
+                    array[xSecond, ySecond] = memory;
+                }
+
+
         static void RowSwap(int[,] array)
         {
             Console.WriteLine("Hodnota a je pro řádek 1, hodnota b pro řádek 2.");
@@ -193,25 +215,172 @@ namespace SearchPlayground
             }
         }
 
-
-        static void PositionSwap(int[,] array)
+        
+        static void MainDiagSwap(int[,] array)
         {
-            Console.WriteLine("Hodnota a je pro Xovou souřadnici prvního čísla, hodnota b je pro Yovou souřadnici prvního čísla.");
-            AskForNumbersPlus(mainArray);
-            int xFirst = a;
-            int yFirst = b;
-            Console.WriteLine("Hodnota a je pro Xovou souřadnici druhého čísla, hodnota b je pro Yovou souřadnici druhého čísla.");
-            AskForNumbersPlus(mainArray);
-            int xSecond = a;
-            int ySecond = b;
-            int memory;
-            memory = array[xFirst, yFirst];
-            array[xFirst, yFirst] = array[xSecond, ySecond];
-            array[xSecond, ySecond] = memory;
+            int j = 0;
+            int depth;
+            int length;
+            for (int i = 0; i < (array.GetLength(0) / 2); i++, j++)
+            {
+                if (array.GetLength(0) < array.GetLength(1)) //netuším (vím technicky ale ne proč to nejde jednodušeji) proč ale tohle je jediný způsob jak zajistit že tahle funkce funguje i v různě velkých polích
+                {
+                    length = array.GetLength(0) - 1 - i;
+                    depth = array.GetLength(0) - 1 - j;
+                }
+                else
+                {
+                    length = array.GetLength(1) - 1 - i;
+                    depth = array.GetLength(1) - 1 - j;
+                }
+                memory = array[j, i];
+                array[j, i] = array[length, depth];
+                array[length, depth] = memory;
+            }
         }
 
 
-    static void Main(string[] args)
+        static void SideDiagSwap(int[,] array) //s tímhle mi pomohl Tob, pak se to samo a vůbec ne mým přičiněním rozbilo a takhle to vypadá spraveně: vezme levý dolní roh, prohodí s horním koncem, posune se nahoru a vpravo o jedna a pak opakuje proces
+        {
+            int j = 0;
+            for (int i = array.GetLength(1) - 1; i > array.GetLength(1) / 2; i--, j++)
+            {
+                if (array.GetLength(1) < array.GetLength(0))  //netuším (vím technicky ale ne proč to nejde jednodušeji) proč ale tohle je jediný způsob jak zajistit že tahle funkce funguje i v různě velkých polích
+                {
+                    i = array.GetLength(1) - 1 - j;
+                }
+                else
+                {
+                    i = array.GetLength(0) - 1 - j;
+                }
+                memory = array[i, j];
+                array[i, j] = array[j, i];
+                array[j, i] = memory;
+            } 
+        }
+
+        static void MultiplyArray(int[,] array)
+        {
+            int.TryParse(Console.ReadLine(), out input);
+            Console.WriteLine();
+            for (int i = 0; i < array.GetLength(0); i++)
+            {
+                for (int f = 0; f < array.GetLength(1); f++)
+                {
+                    array[i, f] = array[i, f] * input;
+                    Console.Write(array[i, f] + "  ");
+                    if (array[i, f] >= 0 && array[i, f] < 10)
+                    {
+                        Console.Write(" ");
+                    }
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine();
+        }
+
+        static void MultiplyElement(int[,] array) 
+        {
+            input = 3;
+            do
+            {
+                Console.WriteLine("Řádek (0), sloupec(1) nebo prvek (2)?");
+                int.TryParse(Console.ReadLine(), out input);
+                if (input == 0 || input == 1 || input == 2)
+                {
+                    break;
+                }
+            } while (true);
+            if (input == 0)
+            {
+                do
+                {
+                    Console.WriteLine("Který řádek?");
+                    int.TryParse(Console.ReadLine(), out a);
+                } while (input >= array.GetLength(1) || input < 0);
+                Console.WriteLine("Jakým číslem?");
+                int.TryParse(Console.ReadLine(), out b);
+                for (int i = 0; i < array.GetLength(0); i++)
+                {                    
+                    for (int f = 0; f < array.GetLength(1); f++)
+                    {
+                        if (i == a)
+                        {
+                            array[i, f] = array[i, f] * input;
+                        }
+                        Console.Write(array[i, f] + "  ");
+                        if (array[i, f] >= 0 && array[i, f] < 10)
+                        {
+                            Console.Write(" ");
+                        }
+                    }
+                    Console.WriteLine();
+                }
+                Console.WriteLine();
+            }
+            if (input == 1)
+            {
+                do
+                {
+                    Console.WriteLine("Který sloupec?");
+                    int.TryParse(Console.ReadLine(), out a);
+                } while (a >= array.GetLength(0) || a < 0);
+                Console.WriteLine("Jakým číslem?");
+                int.TryParse(Console.ReadLine(), out input);
+                for (int i = 0; i < array.GetLength(0); i++)
+                {
+                    for (int f = 0; f < array.GetLength(1); f++)
+                    {
+                        if (f == a)
+                        {
+                            array[i, f] = array[i, f] * input;
+                        }
+                        Console.Write(array[i, f] + "  ");
+                        if (array[i, f] >= 0 && array[i, f] < 10)
+                        {
+                            Console.Write(" ");
+                        }
+                    }
+                    Console.WriteLine();
+                }
+                Console.WriteLine();
+            }
+            if (input == 2)
+            {
+                Console.WriteLine("Které číslo? Hodnota a je pro souřadnici x, hodnota b pro souřadnici y.");
+                AskForNumbersPlus(mainArray);
+                Console.WriteLine("Jakým číslem?");
+                int.TryParse(Console.ReadLine(), out input);
+                array[a, b] = array[a, b] * input;
+                for (int i = 0; i < array.GetLength(0); i++)
+                {
+                    for (int f = 0; f < array.GetLength(1); f++)
+                    {
+                        Console.Write(array[i, f] + "  ");
+                        if (array[i, f] >= 0 && array[i, f] < 10)
+                        {
+                            Console.Write(" ");
+                        }
+                    }
+                    Console.WriteLine();
+                }
+                Console.WriteLine();
+            }
+        }
+
+        static void TransposeMainDiagonal(int[,] array)
+        {
+            int[,] transposedArray = new int[array.GetLength(1), array.GetLength(0)];
+            for (int i = 0; i < array.GetLength(0); i++)
+            {
+                for (int j = 0; j < array.GetLength(1); j++)
+                {
+                    transposedArray[j, i] = array[i, j];
+                }
+            }
+            WriteArray(transposedArray);
+        }
+        static void Main(string[] args)
         {
             Console.WriteLine("Hodnota a je pro počet řádků, Hodnota b pro počet sloupců.");
             AskForNumbers();
@@ -236,7 +405,7 @@ namespace SearchPlayground
             WriteArray(mainArray);
             do
             {
-                Console.WriteLine("CO BUDE TVÁ DALŠÍ ČINNOST?\nProhazovat čísla (1)\nProhazovat řádky (2)\nProhazovat sloupce (3)\nOtočit vedlejší diagonálu (4)\nOtočit hlavní diagonálu (5)\nUkončit program (0)\n");
+                Console.WriteLine("CO BUDE TVÁ DALŠÍ ČINNOST?\nProhazovat čísla (1)\nProhazovat řádky (2)\nProhazovat sloupce (3)\nOtočit vedlejší diagonálu (4)\nOtočit hlavní diagonálu (5)\nVynásobit celé pole jedním číslem (6)\nVynásobit specifický řádek/prvek (7)\nTranspozicovat podél hlavní diagonály (7) (jednorázoavá operace!!!! pole se následně vrátí do předešlého stavu)\nUkončit program (0 nebo Any other key)\n");
                 int.TryParse(Console.ReadLine(),out input);
                 if (input == 0) //tenhle if tu musí být, neboť switch využívá break k ukončení code snippetu. v prípadě že input je 0 tak breakujeme do cyklus a ukočujeme program
                 {
@@ -256,12 +425,19 @@ namespace SearchPlayground
                             ColumnSwap(mainArray);
                             break;
                         case 4:
+                            SideDiagSwap(mainArray);
                             break;
                         case 5:
+                            MainDiagSwap(mainArray);
                             break;
                         case 6:
+                            MultiplyArray(mainArray);
                             break;
                         case 7:
+                            MultiplyElement(mainArray);
+                            break;
+                        case 8:
+                            TransposeMainDiagonal(mainArray);
                             break;
                         default:
                             break;
