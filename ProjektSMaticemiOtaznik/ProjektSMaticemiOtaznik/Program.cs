@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -34,22 +35,26 @@ namespace SearchPlayground
         //S čím přijdete vy :)
         //- tolik bodů, na kolik se domluvíme
         //
-        //5     bodů    -input array
+        //5     bodů    -input array         možná 7.5? (mám obě možnosti zadání)
         //7.5   bodů    -prohazování
         //5     bodů    -diagonály
-        //7   bodů    -coding style?
+        //7     bodů    -coding style?
         //12.5  bodů    -vynásobit : matici(5) sloupec(2.5) řádek(2.5) prvek(2.5)
-        //37 = 3
+        //10    bodů    -transpozice
+        //15    bodů    -násobení matic
+        //57 = 1??? možná? snad?
 
         static int a = 0;
         static int b = 0;
         static int input = 0;
         static int[,] mainArray;
+        static int[,] transposedArray;
         static int memory;
+        static bool parse;
+        static string index;
 
         static void AskForNumbers()
         {
-            bool parse;
             int counter = 0;
             //STRUKTURA:
             //opakuj dokud counter menší než jedna 
@@ -81,13 +86,13 @@ namespace SearchPlayground
                             }
                             else
                             {
-                                Console.WriteLine("Je nutno zadat číslem, a musí být alsepoň jedna.");
+                                Console.WriteLine("Je nutno zadat číslem, a musí být alsepoň jedna.");//vybídka ke znovunastavení ínputu
                             }
                         } while (b < 1);
                     }
                     else
                     {
-                        Console.WriteLine("Je nutno zadat číslem, a musí být alsepoň jedna.");
+                        Console.WriteLine("Je nutno zadat číslem, a musí být alsepoň jedna.");//vybídka ke znovunastavení ínputu
                     }
                 }
                 else
@@ -98,7 +103,7 @@ namespace SearchPlayground
         }
 
 
-        static void AskForNumbersPlus(int[,] array)
+        static void AskForNumbersPlus(int[,] array) //v podstatě ask for numbers ale je zajištěné aby souřadnice nikdy nepřekročily rozsah pole
         {
             do
             {
@@ -110,7 +115,7 @@ namespace SearchPlayground
         }
 
 
-        static void WriteArray(int[,] array)
+        static void WriteArray(int[,] array) //vypíše pole do konzole (je tu i posunutí čísel s jednou cifrou aby bylo pole zarovnané
         {
             Console.WriteLine();
             for (int i = 0; i < array.GetLength(0); i++)
@@ -128,7 +133,7 @@ namespace SearchPlayground
             Console.WriteLine();
         }
 
-        static void FillArrayRandom(int[,] array)
+        static void FillArrayRandom(int[,] array)//plní pole náhodnýmy postupkami 1-10 (prvek 1A je něco mezi  1-10, prvekk 2A je 1A + 1-10)
         {
             Random rng = new Random();
             int lastNumber = 0;
@@ -141,7 +146,7 @@ namespace SearchPlayground
                 }
             }
         }
-        static void FillArrayConsecutive(int[,] array)
+        static void FillArrayConsecutive(int[,] array) //postupně naplní celé pole postupnými čísly
         {
             int lastNumber = 0;
             for (int i = 0; i < array.GetLength(0); i++)
@@ -155,7 +160,7 @@ namespace SearchPlayground
         }
 
 
-        static void PositionSwap(int[,] array)
+        static void PositionSwap(int[,] array) //zeptá se na dvě ruzné souřadnice 
                 {
                     Console.WriteLine("Hodnota a je pro Xovou souřadnici prvního čísla, hodnota b je pro Yovou souřadnici prvního čísla.");
                     AskForNumbersPlus(mainArray);
@@ -171,16 +176,10 @@ namespace SearchPlayground
                 }
 
 
-        static void RowSwap(int[,] array)
+        static void RowSwap(int[,] array) //jednoduše postupně prohodí veškeré prvky ve sloupcích x a y
         {
             Console.WriteLine("Hodnota a je pro řádek 1, hodnota b pro řádek 2.");
-            do
-            {
-                Console.WriteLine("Pokud tuto zprávu vidíš podruhé, zadej menší hodnoty, jsi mimo pole.");
-                AskForNumbers();
-                a--;
-                b--;
-            } while (a >= array.GetLength(0) || b >= array.GetLength(0));
+            AskForNumbersPlus(array);
             int[] swapArray = new int[array.GetLength(1)];
             for (int i = 0; i < array.GetLength(1); i++)
             {
@@ -196,7 +195,7 @@ namespace SearchPlayground
             }
         }
 
-        static void ColumnSwap(int[,] array)
+        static void ColumnSwap(int[,] array) //jednoduše postupně prohodí veškeré prvky ve sloupcích x a y
         {
             Console.WriteLine("Hodnota a je pro sloupec 1, hodnota b pro sloupec 2.");
             AskForNumbersPlus(mainArray);
@@ -216,7 +215,7 @@ namespace SearchPlayground
         }
 
         
-        static void MainDiagSwap(int[,] array)
+        static void MainDiagSwap(int[,] array) //prohazuje pole podél hlevní diagonály (hodně volně odvozeno od prohazování vedlejší diagonály)
         {
             int j = 0;
             int depth;
@@ -259,38 +258,54 @@ namespace SearchPlayground
             } 
         }
 
-        static void MultiplyArray(int[,] array)
+        static void MultiplyArray(int[,] array)//násobí celé pole postupně během čtení
         {
-            int.TryParse(Console.ReadLine(), out input);
-            Console.WriteLine();
-            for (int i = 0; i < array.GetLength(0); i++)
+            parse = int.TryParse(Console.ReadLine(), out input);
+            if (parse)
             {
-                for (int f = 0; f < array.GetLength(1); f++)
+                Console.WriteLine();
+                for (int i = 0; i < array.GetLength(0); i++)
                 {
-                    array[i, f] = array[i, f] * input;
-                    Console.Write(array[i, f] + "  ");
-                    if (array[i, f] >= 0 && array[i, f] < 10)
+                    for (int f = 0; f < array.GetLength(1); f++)
                     {
-                        Console.Write(" ");
+                        array[i, f] = array[i, f] * input;
+                        Console.Write(array[i, f] + "  ");
+                        if (array[i, f] >= 0 && array[i, f] < 10)
+                        {
+                            Console.Write(" ");
+                        }
                     }
+                    Console.WriteLine();
                 }
                 Console.WriteLine();
             }
-            Console.WriteLine();
+            else
+            {
+                Console.WriteLine("Zkus jiné číslo - OutOfRange");
+            }
         }
 
         static void MultiplyElement(int[,] array) 
         {
+            //pokud input 
+            // 0
+            //násobí řádek
+            // 1
+            //násobí sloupec
+            // 2 
+            // zeptá se na souřadnice a nasobí tu
             input = 3;
+            parse = false;
             do
             {
                 Console.WriteLine("Řádek (0), sloupec(1) nebo prvek (2)?");
                 int.TryParse(Console.ReadLine(), out input);
                 if (input == 0 || input == 1 || input == 2)
                 {
-                    break;
+                    parse = true;
                 }
-            } while (true);
+            } while (!parse);
+            input = -1;
             if (input == 0)
             {
                 do
@@ -299,7 +314,10 @@ namespace SearchPlayground
                     int.TryParse(Console.ReadLine(), out a);
                 } while (input >= array.GetLength(1) || input < 0);
                 Console.WriteLine("Jakým číslem?");
-                int.TryParse(Console.ReadLine(), out b);
+                do
+                {
+                    parse = int.TryParse(Console.ReadLine(), out b);
+                } while (!parse);                
                 for (int i = 0; i < array.GetLength(0); i++)
                 {                    
                     for (int f = 0; f < array.GetLength(1); f++)
@@ -368,9 +386,9 @@ namespace SearchPlayground
             }
         }
 
-        static void TransposeMainDiagonal(int[,] array)
+        static void TransposeMainDiagonal(int[,] array) // Vezme pole a otočí ho po hlavní diagonále
         {
-            int[,] transposedArray = new int[array.GetLength(1), array.GetLength(0)];
+            transposedArray = new int[array.GetLength(1), array.GetLength(0)];
             for (int i = 0; i < array.GetLength(0); i++)
             {
                 for (int j = 0; j < array.GetLength(1); j++)
@@ -380,11 +398,62 @@ namespace SearchPlayground
             }
             WriteArray(transposedArray);
         }
+        static void MultiplyMainArrayWithTransposed(int[,] array)
+        {
+            TransposeMainDiagonal(array);
+            int[,] multipliedArray = new int[array.GetLength(0), array.GetLength(0)]; //pro každý prvek (FORy i a j) v poli multiA jedeme FOR k který postupně projede sloupcem "nad" polem multiA například v poli transA a vynásobí je s protějškem v poli mainA a následně všehny sečte
+            for (int i = 0; i < multipliedArray.GetLength(0); i++)
+            {
+                for (int j = 0; j < multipliedArray.GetLength(0); j++)
+                {
+                    memory = 0;
+                    for (int k = 0; k < array.GetLength(1); k++)
+                    {
+                        memory += array[i, k] * transposedArray[k, j];
+                    }
+                    multipliedArray[i, j] = memory;
+                }
+            }
+            WriteArray(multipliedArray);
+        
+        }
+
+        static int BinarySearchRecursive(int[,] array, int elementToSearch, int lower, int upper) //NEFUNGUJE NENÍ V NABÍDCE
+        {
+            memory = 0;
+            for (int i = 0; i < array.GetLength(1); i++)
+            {
+                //TODO naimplementuj binární vyhledávání rekurzivním způsobem (Zamysli se nad parametry, které tato funkce přijímá vzpomeň si na přístup Rozděl a Panuj.)
+                memory++;
+                if (lower > upper)
+                {
+                    return -1;
+                }
+                int mid = (lower + upper) / 2;
+                if (array[i, mid] == elementToSearch)
+                {
+                    index += i + ", " + mid;
+                    return mid;
+                }
+                if (array[i, mid] < elementToSearch)
+                {
+                    index += i + ", " + (mid + 1);
+                    return BinarySearchRecursive(array, elementToSearch, mid + 1, upper);
+                }
+                if (array[i, mid] > elementToSearch)
+                {
+                    index += i + ", " + (mid - 1);
+                    return BinarySearchRecursive(array, elementToSearch, lower, mid - 1);
+                }
+            }
+            return -1;
+        }
+
         static void Main(string[] args)
         {
             Console.WriteLine("Hodnota a je pro počet řádků, Hodnota b pro počet sloupců.");
             AskForNumbers();
-            mainArray = new int[a, b];
+            mainArray = new int[a, b]; //generuje pole o velikosti a * b
             a = 0;
             b = 0;
             do //konvertuje input na int a opakuje loop dokud user nenapíše 0/1
@@ -393,21 +462,24 @@ namespace SearchPlayground
                 int.TryParse(Console.ReadLine(), out input);
                 if (input == 0)
                 {
-                    FillArrayRandom(mainArray);
+                    FillArrayRandom(mainArray); //plní pole náhodnýmy postupkami 1-10 (prvek 1A je něco mezi  1-10, prvekk 2A je 1A + 1-10)
                     break;
                 }
                 else if (input == 1)
                 {
-                    FillArrayConsecutive(mainArray);
+                    FillArrayConsecutive(mainArray);//pní pole postupnými čísly
                     break;
                 }
             } while (input != 0 || input != 1);
             WriteArray(mainArray);
             do
             {
-                Console.WriteLine("CO BUDE TVÁ DALŠÍ ČINNOST?\nProhazovat čísla (1)\nProhazovat řádky (2)\nProhazovat sloupce (3)\nOtočit vedlejší diagonálu (4)\nOtočit hlavní diagonálu (5)\nVynásobit celé pole jedním číslem (6)\nVynásobit specifický řádek/prvek (7)\nTranspozicovat podél hlavní diagonály (7) (jednorázoavá operace!!!! pole se následně vrátí do předešlého stavu)\nUkončit program (0 nebo Any other key)\n");
-                int.TryParse(Console.ReadLine(),out input);
-                if (input == 0) //tenhle if tu musí být, neboť switch využívá break k ukončení code snippetu. v prípadě že input je 0 tak breakujeme do cyklus a ukočujeme program
+                Console.WriteLine("CO BUDE TVÁ DALŠÍ ČINNOST?\nProhazovat čísla (1)\nProhazovat řádky (2)\nProhazovat sloupce (3)\nOtočit vedlejší diagonálu (4)\nOtočit hlavní diagonálu (5)\nVynásobit celé pole jedním číslem (6)\nVynásobit specifický řádek/prvek (7)\nTranspozicovat podél hlavní diagonály (8)(jednorázoavá operace!!!! pole se následně vrátí do předešlého stavu)\nVynásobit matici transpozicí sama sebe (9)(jednorázoavá operace!!!! pole se následně vrátí do předešlého stavu)\nUkončit program (0 nebo Any other key)\n");
+                do
+                {
+                    parse = int.TryParse(Console.ReadLine(), out input);
+                } while (!parse);
+                if (input == 0) //tenhle if tu musí být, neboť switch využívá break k ukončení code snippetu. v prípadě že input je 0 tak breakujeme DO cyklus a ukočujeme program
                 {
                     break;
                 }
@@ -437,7 +509,20 @@ namespace SearchPlayground
                             MultiplyElement(mainArray);
                             break;
                         case 8:
-                            TransposeMainDiagonal(mainArray);
+                            TransposeMainDiagonal(mainArray); 
+                            break;
+                        case 9:
+                            MultiplyMainArrayWithTransposed(mainArray); //tohle je pěkná postupka :) (délka názvů)
+                            break;
+                        case 10: //nefunguje proto není v nabídce
+                            Console.WriteLine("Které číslo hledáme?");
+                            do
+                            {
+                                parse = int.TryParse(Console.ReadLine(), out input);
+                            } while (parse);
+
+                            BinarySearchRecursive(mainArray, input, 0, mainArray.GetLength(0));
+                            Console.WriteLine($"    Rekurzivní binární vyhledávání našlo prvek {input} na indexu {index} během {memory} kol");
                             break;
                         default:
                             break;
