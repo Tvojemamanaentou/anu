@@ -378,7 +378,7 @@ namespace HraEscape
                         location = 3;
                         NarratorSpeaks("Na stole ležely tři věci.");
                         PankracSpeaks("Hm, dopis, miska a šálek s ještě teplou nedopitou kávou. To tu asi musel nechat Alfréd.");
-                        EventSpeaks("zPodlokace:\ndopis\nhrnek\nmiska");
+                        EventSpeaks("Podlokace:\ndopis\nhrnek\nmiska");
                         while (location == 3)
                         {
                             LocationTable(input);
