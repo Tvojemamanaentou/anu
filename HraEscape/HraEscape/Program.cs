@@ -14,9 +14,9 @@ namespace HraEscape
      */
     internal class Program
     {
-        static int location = 0;
-        static int unterlocation = 0;
-        static bool[] invState = new bool[5];
+        static int location = 0; //funguje na 4 lokace skříň, klec, stůl, knihovna
+        static int unterlocation = 0; //používáme jen 2x u knihovny ale jiné jednodušší řešení mě napadlo a to jsem to zkoušela
+        static bool[] invState = new bool[5]; //má to v inventáři?
         static string[] invText = { "hodně spravované UV světelko", "miska slunečnicových semínek", "gravírovaná bronzová růže", "cár papíru", "zlatý klíček" };
         /*Máme pět itemů které může Pankrác použít. To jestli hráč má nějaký item řešíme tak že ukládáme bool na pozici itemu. a pro jeho vypsání pak porovnáváme s arrayem invText kde jsou uloženy jména itemů.
                                     * itemy:
@@ -53,15 +53,15 @@ namespace HraEscape
                 Console.Write(character);
                 if (character == ' ')
                 {
-                    Thread.Sleep(0); //100
+                    Thread.Sleep(50); 
                 }
                 else if (character == '.' || character == '!')
                 {
-                    Thread.Sleep(0); //200
+                    Thread.Sleep(100);
                 }
                 else
                 {
-                    Thread.Sleep(0); //25
+                    Thread.Sleep(12);
                 }
             }
             Console.ForegroundColor = ConsoleColor.White;
@@ -97,12 +97,12 @@ namespace HraEscape
                         {
                             if (item > 4 || item < -1)
                             {
-                                EventSpeaks("Vždyť tolik kapes ani nemam... Zkus něco jiného.\n");
+                                PankracSpeaks("Vždyť tolik kapes ani nemam... Zkus něco jiného.\n");
                                 item = 6;
                             }
                             else if (invState[item] == false)
                             {
-                                EventSpeaks("Vždyť v téhle kapse ani nic nemam! Zkus něco jiného.\n");
+                                PankracSpeaks("Vždyť v téhle kapse ani nic nemam! Zkus něco jiného.\n");
                                 item = 6;
                             }
                             else
@@ -110,6 +110,13 @@ namespace HraEscape
                                 switch (location)
                                 {
                                     case 1:
+                                        if (item == 4)
+                                        {
+                                            PankracSpeaks("JÉ! OTVEVŘELA SE! Ale co to jé?\n");
+                                            NarratorSpeaks("Konec Dema, pro plnou verzi mi zaplaťte.");
+                                            Console.ReadKey();
+                                            Environment.Exit(0);
+                                        }
                                         break;
                                     case 2:
                                         if (item == 1)
@@ -122,10 +129,8 @@ namespace HraEscape
                                         }
                                         else
                                         {
-                                            PankracSpeaks("Teda co s timhle tady mam vykoumat to netuším...");
+                                            PankracSpeaks("Teda co s timhle tady mam vykoumat to netuším...\n");
                                         }
-                                        break;
-                                    case 3:
                                         break;
                                     case 4:
                                         switch (unterlocation)
@@ -154,29 +159,25 @@ namespace HraEscape
                                                 }
                                                 else
                                                 {
-                                                    PankracSpeaks("Teda co s timhle tady mam vykoumat to netuším...");
+                                                    PankracSpeaks("Teda co s timhle tady mam vykoumat to netuším...\n");
                                                 }
                                                 break;
                                         }
                                         break;
-                                }
-                                
-                            }
-                            
+                                }                                
+                            }                            
                         }
                         else
                         {
                             Error();
-                        }
-                        
-                    }
-                    
+                        }                        
+                    }                    
                     break;
                 case 2:
                     InterInventoryAction();
                     break;
                 default:
-                    EventSpeaks("Há há, moc vtipný, teď zkus něco pořádnýho.");
+                    EventSpeaks("Há há, moc vtipný, teď zkus něco pořádnýho.\n");
                     Action(input, location);
                     break;
             }
@@ -217,15 +218,15 @@ namespace HraEscape
                 }
             }
             memory = Convert.ToString(itemA) + Convert.ToString(itemB); //jelikož budemeli mixovat kterekoliv itemy mimo UV s papírkem tak se nic stát nemůže tak potřebujeme jen vědět jestli hráč nekombinuje 03 nebo 30 pokud ano tak říkáme jů svítí, pokud ne tak se divíme co s tím měl jako udělat
-            if (memory == "O3" || memory == "30")
+            if (memory == "03" || memory == "30")
             {
-                PankracSpeaks("JŮ! On ten útržek úplně začal svítit! No ale co to-? Něco se tu píše. Ká eR eL É? Co to znamená? Že by Krleš? Ale co to má s Kriste- JAÚ! Jéžiš! Ten zpropadenej UV zmetek mě kopnul a já ho pustil. Tak teď už ho opravdu nezachráním");
+                PankracSpeaks("JŮ! On ten útržek úplně začal svítit! No ale co to-? Něco se tu píše. Ká eR eL É? Co to znamená? Že by Krleš? Ale co to má s Kriste- JAÚ! Jéžiš! Ten zpropadenej UV zmetek mě kopnul a já ho pustil. Tak teď už ho opravdu nezachráním\n");
                 invState[0] = false;
                 invText[3] = "Cár papíru s písmeny K R L E";
-             }
+            }
             else
             {
-                PankracSpeaks("Teda co s těmahle věcma mam vykoumat to netuším...");
+                PankracSpeaks("Teda co s těmahle věcma mam vykoumat to netuším...\n");
             }
         }
         static void LocationTable(string input)
@@ -355,7 +356,7 @@ namespace HraEscape
             {
                 EventSpeaks("Lokace:\nskříň\nklec\nstůl\nknihovna ");
                 input = Console.ReadLine();
-                switch (input)
+                switch (input) //vybere jednu z lokací, hodí do funkce, buď what now nebo pokud je kostra dané lokace složitější, do vlastní funkce
                 {
                     case "skříň":
                         location = 1;
