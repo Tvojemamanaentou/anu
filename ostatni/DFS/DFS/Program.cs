@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 /*
  * Made by Jan Borecky for PRG seminar at Gymnazium Voderadska, year 2023-2024.
@@ -65,6 +66,7 @@ namespace DFS
             /*
              * TODO: Naimplementujte prohledávání do hloubky
              */
+            int counter = 1;
             bool done = false;
             while (done != true)
             {                
@@ -80,7 +82,12 @@ namespace DFS
                 }
                 else
                 {
-
+                    for (int i = 0; i < depth; i++)
+                    {
+                        counter++;
+                        currentNode.children[1].index = counter;
+                        currentNode = currentNode.children[1];
+                    }
                 }
                          
             }
