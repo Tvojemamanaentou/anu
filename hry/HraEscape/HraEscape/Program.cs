@@ -229,11 +229,11 @@ namespace HraEscape
                 PankracSpeaks("Teda co s těmahle věcma mam vykoumat to netuším...\n");
             }
         }
-        static void LocationTable(string input)
+        static void LocationTable()
         {
             while (location == 3)
             {
-                input = Console.ReadLine();
+                string input = Console.ReadLine();
                 switch (input)
                 {
                     case "dopis":
@@ -381,7 +381,7 @@ namespace HraEscape
                         EventSpeaks("Podlokace:\ndopis\nhrnek\nmiska");
                         while (location == 3)
                         {
-                            LocationTable(input);
+                            LocationTable();
                         }
                         break;
                     case "knihovna":
